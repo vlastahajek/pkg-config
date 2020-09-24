@@ -157,7 +157,7 @@ func runPkgConfig(execCmd, pkgConfigPath string, libs []string, flags Flags) err
 	} else {
 		pathEnv = pkgConfigPath
 	}
-
+   	logger.Info(" run pkg-config config", zap.String("execCmd", execCmd),zap.String("args", strings.Join(args,",")) )
 	cmd := exec.Command(execCmd, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -213,9 +213,10 @@ func realMain() int {
 		return 1
 	}
 	defer func() { _ = os.RemoveAll(pkgConfigPath) }()
-
+	logger.Info("pkg-config config", zap.String("path", pkgConfigPath))
 	// Construct the packages and write pkgconfig files to point to those packages.
 	for _, lib := range libs {
+       	logger.Info("package", zap.String("lib", lib))
 		if l, ok, err := getLibraryFor(ctx, lib, flags.Static); err != nil {
 			logger.Error("Error configuring library", zap.String("name", lib), zap.Error(err))
 			return 1
